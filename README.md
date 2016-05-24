@@ -7,3 +7,4 @@ MobSOS Toolkit:
 * MobSOS Monitor: https://github.com/rwth-acis/mobsos-monitor
 * MobSOS Surveys: https://github.com/rwth-acis/mobsos-survey
 * MobSOS Query Visualization: https://github.com/rwth-acis/las2peer-Query-Visualization-Service
+* MobSOS Success Modeling: https://github.com/rwth-acis/las2peer-Monitoring-Data-Provision-Service
