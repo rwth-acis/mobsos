@@ -44,7 +44,7 @@ services:
       - BOOTSTRAP=http://data-processing:9011
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MOBSOS_DATABASE}
+      - MYSQL_DATABASE=${QVS_DATABASE}
 
   contact-service:
     image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/las2peer-contact-service:develop"
@@ -66,6 +66,7 @@ services:
       - BOOTSTRAP=http://data-processing:9011
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${SURVEYS_DATABASE}
 
   yjs:
       image: rwthacis/y-websockets-server
