@@ -1,0 +1,99 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  mysql:
+    image: "mysql:5.7"
+    restart: always
+    volumes:
+      - mysqlvolume:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+
+  data-processing:
+    image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-data-processing:${TAG}
+    depends_on :
+      - mysql
+    ports:
+      - "8080:8080"
+    environment:
+      - LAS2PEER_PORT=9011
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MOBSOS_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+    hostname: data-processing
+  
+  success-modeling:
+    image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-success-modeling:${TAG}"
+    depends_on :
+      - mysql
+      - data-processing
+    environment:
+      - LAS2PEER_PORT=9012
+      - BOOTSTRAP=data-processing:9011
+      - USE_FILE_SERVICE=FALSE
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MOBSOS_DATABASE}
+
+  query-visualization:
+    image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-query-visualization:${TAG}"
+    depends_on :
+      - mysql
+      - data-processing
+    environment:
+      - LAS2PEER_PORT=9013
+      - BOOTSTRAP=data-processing:9011
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${QVS_DATABASE}
+
+  contact-service:
+    image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/las2peer-contact-service:develop"
+    depends_on :
+      - data-processing
+    environment:
+      - LAS2PEER_PORT=9014
+      - BOOTSTRAP=data-processing:9011
+      - CONTACT_STORER_NAME=contact-storer
+      - CONTACT_STORER_PW=contact-storer
+
+  surveys:
+      image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-surveys:${TAG}"
+      depends_on :
+      - mysql
+      - data-processing
+      environment:
+      - LAS2PEER_PORT=9015
+      - BOOTSTRAP=data-processing:9011
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${SURVEYS_DATABASE}
+
+  # yjs: #commented out because for some reason not reachable via localhost
+  #     image: rwthacis/y-websockets-server
+  #     ports:
+  #       - "1234:1234"
+  #     expose:
+  #       - 1234
+  #     environment:
+  #       - DEBUG=y*,-y:connector-message y-websockets-server --port 1234 
+
+  evaluation-center:
+      image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-evaluation-center:${TAG}"
+      depends_on :
+      - data-processing
+      - surveys
+      - query-visualization
+      - success-modeling
+      - contact-service
+      # - yjs
+      ports:
+        - "4200:80"
+      environment:
+        - BOOTSTRAP=$LAS2PEER_WEBCONNECTOR_URL
+        - Y_WEBSOCKET=wss://tech4comp.dbis.rwth-aachen.de/yjs-websocket/
+        - PRODUCTION=FALSE
+        - SURVEYS_URL=http://localhost:8080/mobsos-surveys
+        - OIDC_CLIENT_ID=$OIDC_CLIENT_ID
+
+volumes:
+  mysqlvolume: {}
