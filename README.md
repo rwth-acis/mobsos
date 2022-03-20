@@ -13,6 +13,6 @@ To get started using the MobSOS framework, you can use the `docker-compose.yml` 
 ```sh
 docker-compose up
 ```
-and visit `localhost`
+and visit `localhost:4200`
 
 [![Join the chat at https://gitter.im/rwth-acis/mobsos](https://badges.gitter.im/rwth-acis/mobsos.svg)](https://gitter.im/rwth-acis/mobsos?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
