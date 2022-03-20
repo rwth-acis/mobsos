@@ -28,8 +28,8 @@ services:
       - data-processing
     environment:
       - LAS2PEER_PORT=9012
-      - BOOTSTRAP=http://data-processing:9011
-      -  USE_FILE_SERVICE=FALSE
+      - BOOTSTRAP=data-processing:9011
+      - USE_FILE_SERVICE=FALSE
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MOBSOS_DATABASE}
@@ -41,7 +41,7 @@ services:
       - data-processing
     environment:
       - LAS2PEER_PORT=9013
-      - BOOTSTRAP=http://data-processing:9011
+      - BOOTSTRAP=data-processing:9011
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${QVS_DATABASE}
@@ -52,7 +52,7 @@ services:
       - data-processing
     environment:
       - LAS2PEER_PORT=9014
-      - BOOTSTRAP=http://data-processing:9011
+      - BOOTSTRAP=data-processing:9011
       - CONTACT_STORER_NAME=contact-storer
       - CONTACT_STORER_PW=contact-storer
 
@@ -63,7 +63,7 @@ services:
       - data-processing
       environment:
       - LAS2PEER_PORT=9015
-      - BOOTSTRAP=http://data-processing:9011
+      - BOOTSTRAP=data-processing:9011
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${SURVEYS_DATABASE}
@@ -86,9 +86,10 @@ services:
         - "80:80"
       environment:
         - BOOTSTRAP=http://localhost:8080/
-        - Y_WEBSOCKET=http://localhost:1234/
+        - Y_WEBSOCKET=ws://localhost:1234/
         - PRODUCTION=FALSE
-        - SURVEYS_URL=http://localhost:8080/surveys
+        - SURVEYS_URL=http://localhost:8080/mobsos-surveys
+        - OIDC_CLIENT_ID=localtestclient
 
 volumes:
   mysqlvolume: {}
