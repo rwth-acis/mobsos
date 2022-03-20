@@ -68,10 +68,14 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${SURVEYS_DATABASE}
 
-  yjs:
-      image: rwthacis/y-websockets-server
-      ports:
-        - "1234:1234"
+  # yjs: #commented out because for some reason not reachable via localhost
+  #     image: rwthacis/y-websockets-server
+  #     ports:
+  #       - "1234:1234"
+  #     expose:
+  #       - 1234
+  #     environment:
+  #       - DEBUG=y*,-y:connector-message y-websockets-server --port 1234 
 
   evaluation-center:
       image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-evaluation-center:${TAG}"
@@ -81,15 +85,15 @@ services:
       - query-visualization
       - success-modeling
       - contact-service
-      - yjs
+      # - yjs
       ports:
-        - "80:80"
+        - "4200:80"
       environment:
-        - BOOTSTRAP=http://localhost:8080/
-        - Y_WEBSOCKET=ws://localhost:1234/
+        - BOOTSTRAP=$LAS2PEER_WEBCONNECTOR_URL
+        - Y_WEBSOCKET=wss://tech4comp.dbis.rwth-aachen.de/yjs-websocket/
         - PRODUCTION=FALSE
         - SURVEYS_URL=http://localhost:8080/mobsos-surveys
-        - OIDC_CLIENT_ID=localtestclient
+        - OIDC_CLIENT_ID=$OIDC_CLIENT_ID
 
 volumes:
   mysqlvolume: {}
