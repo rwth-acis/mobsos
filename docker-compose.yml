@@ -9,7 +9,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
 
   data-processing:
-    image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-data-processing:${TAG}
+    image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-data-processing:master
     depends_on :
       - mysql
     ports:
@@ -22,7 +22,7 @@ services:
     hostname: data-processing
   
   success-modeling:
-    image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-success-modeling:${TAG}"
+    image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-success-modeling:master"
     depends_on :
       - mysql
       - data-processing
@@ -35,7 +35,7 @@ services:
       - MYSQL_DATABASE=${MOBSOS_DATABASE}
 
   query-visualization:
-    image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-query-visualization:${TAG}"
+    image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-query-visualization:master"
     depends_on :
       - mysql
       - data-processing
@@ -57,7 +57,7 @@ services:
       - CONTACT_STORER_PW=contact-storer
 
   surveys:
-      image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-surveys:${TAG}"
+      image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-surveys:master"
       depends_on :
       - mysql
       - data-processing
@@ -78,7 +78,7 @@ services:
   #       - DEBUG=y*,-y:connector-message y-websockets-server --port 1234 
 
   evaluation-center:
-      image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-evaluation-center:${TAG}"
+      image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-evaluation-center:master"
       depends_on :
       - data-processing
       - surveys
