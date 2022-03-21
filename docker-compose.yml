@@ -7,6 +7,8 @@ services:
       - mysqlvolume:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    networks:
+      - db
 
   data-processing:
     image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-data-processing:master
@@ -21,6 +23,9 @@ services:
       - MYSQL_DATABASE=${MOBSOS_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
     hostname: data-processing
+    networks:
+      - p2p
+      - db
   
   success-modeling:
     image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-success-modeling:master"
@@ -34,6 +39,9 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MOBSOS_DATABASE}
+    networks:
+      - p2p
+      - db
 
   query-visualization:
     image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-query-visualization:master"
@@ -46,6 +54,9 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${QVS_DATABASE}
+    networks:
+      - p2p
+      - db
 
   contact-service:
     image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/las2peer-contact-service:develop"
@@ -56,18 +67,23 @@ services:
       - BOOTSTRAP=data-processing:9011
       - CONTACT_STORER_NAME=contact-storer
       - CONTACT_STORER_PW=contact-storer
+    networks:
+      - p2p
 
   surveys:
-      image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-surveys:master"
-      depends_on :
-      - mysql
-      - data-processing
-      environment:
-      - LAS2PEER_PORT=9015
-      - BOOTSTRAP=data-processing:9011
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${SURVEYS_DATABASE}
+    image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-surveys:master"
+    depends_on :
+    - mysql
+    - data-processing
+    environment:
+    - LAS2PEER_PORT=9015
+    - BOOTSTRAP=data-processing:9011
+    - MYSQL_USER=${MYSQL_USER}
+    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    - MYSQL_DATABASE=${SURVEYS_DATABASE}
+    networks:
+      - p2p
+      - db
 
   # yjs: #commented out because for some reason not reachable via localhost
   #     image: rwthacis/y-websockets-server
@@ -76,7 +92,9 @@ services:
   #     expose:
   #       - 1234
   #     environment:
-  #       - DEBUG=y*,-y:connector-message y-websockets-server --port 1234 
+  #       - DEBUG=y*,-y:connector-message y-websockets-server --port 1234
+  #     networks:
+  #       - frontend 
 
   evaluation-center:
       image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-evaluation-center:master"
@@ -95,6 +113,16 @@ services:
         - PRODUCTION=FALSE
         - SURVEYS_URL=http://localhost:8080/mobsos-surveys
         - OIDC_CLIENT_ID=$OIDC_CLIENT_ID
+      networks:
+      - frontend
 
 volumes:
   mysqlvolume: {}
+
+networks:
+  p2p:
+    driver: bridge
+  frontend:
+    driver: bridge
+  db:
+    driver: bridge
