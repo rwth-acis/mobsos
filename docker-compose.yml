@@ -8,7 +8,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
     networks:
-      - db
+      - backend
 
   data-processing:
     image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-data-processing:master
@@ -24,8 +24,7 @@ services:
       - MYSQL_USER=${MYSQL_USER}
     hostname: data-processing
     networks:
-      - p2p
-      - db
+      - backend
   
   success-modeling:
     image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-success-modeling:master"
@@ -40,8 +39,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MOBSOS_DATABASE}
     networks:
-      - p2p
-      - db
+      - backend
 
   query-visualization:
     image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-query-visualization:master"
@@ -55,8 +53,8 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${QVS_DATABASE}
     networks:
-      - p2p
-      - db
+      - backend
+
 
   contact-service:
     image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/las2peer-contact-service:develop"
@@ -68,7 +66,7 @@ services:
       - CONTACT_STORER_NAME=contact-storer
       - CONTACT_STORER_PW=contact-storer
     networks:
-      - p2p
+      - backend
 
   surveys:
     image: "registry.tech4comp.dbis.rwth-aachen.de/rwthacis/mobsos-surveys:master"
@@ -82,8 +80,7 @@ services:
     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     - MYSQL_DATABASE=${SURVEYS_DATABASE}
     networks:
-      - p2p
-      - db
+      - backend
 
   # yjs: #commented out because for some reason not reachable via localhost
   #     image: rwthacis/y-websockets-server
@@ -120,9 +117,7 @@ volumes:
   mysqlvolume: {}
 
 networks:
-  p2p:
+  backend:
     driver: bridge
   frontend:
-    driver: bridge
-  db:
     driver: bridge
