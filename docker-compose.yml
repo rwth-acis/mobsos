@@ -14,6 +14,7 @@ services:
       - mysql
     ports:
       - "8080:8080"
+      - "9011:9011"
     environment:
       - LAS2PEER_PORT=9011
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
