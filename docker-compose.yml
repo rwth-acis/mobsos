@@ -90,7 +90,7 @@ services:
         - "4200:80"
       environment:
         - BOOTSTRAP=$LAS2PEER_WEBCONNECTOR_URL
-        - Y_WEBSOCKET=wss://tech4comp.dbis.rwth-aachen.de/yjs-websocket/
+        - Y_WEBSOCKET=$Y_WEBSOCKET_URL
         - PRODUCTION=FALSE
         - SURVEYS_URL=http://localhost:8080/mobsos-surveys
         - OIDC_CLIENT_ID=$OIDC_CLIENT_ID
