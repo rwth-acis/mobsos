@@ -23,6 +23,11 @@ services:
       - MYSQL_DATABASE=${MOBSOS_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
     hostname: data-processing
+    command: 
+      - echo test
+      - chown -R las2peer /src/node-storage
+    volumes:
+      - node-storage:/src/node-storage
     networks:
       - backend
   
@@ -38,6 +43,8 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MOBSOS_DATABASE}
+    volumes:
+      - node-storage:/src/node-storage
     networks:
       - backend
 
@@ -52,6 +59,8 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${QVS_DATABASE}
+    volumes:
+      - node-storage:/src/node-storage
     networks:
       - backend
 
@@ -65,6 +74,8 @@ services:
       - BOOTSTRAP=data-processing:9011
       - CONTACT_STORER_NAME=contact-storer
       - CONTACT_STORER_PW=contact-storer
+    volumes:
+      - node-storage:/src/node-storage
     networks:
       - backend
 
@@ -79,6 +90,8 @@ services:
     - MYSQL_USER=${MYSQL_USER}
     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     - MYSQL_DATABASE=${SURVEYS_DATABASE}
+    volumes:
+      - node-storage:/src/node-storage
     networks:
       - backend
 
@@ -115,6 +128,7 @@ services:
 
 volumes:
   mysqlvolume: {}
+  node-storage: {}
 
 networks:
   backend:
